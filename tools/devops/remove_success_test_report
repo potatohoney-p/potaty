@@ -1,0 +1,34 @@
+#!/bin/sh
+
+#
+# Copyright (c) 2023, tuanchauict
+#
+
+remove_test_result_for_success() {
+    path="$1/build/reports/tests/test"
+    index_file="$path/index.html"
+    if [ ! -f "$index_file" ]; then
+        echo "[$1] DO NOT contain test result. SKIP"
+        return
+    fi
+    test_successful_check=$(cat "$index_file" | grep '<div class="infoBox failures" id="successRate">')
+    if [ -z "$test_successful_check" ]; then
+        echo "[$1] SUCCESS -> REMOVE TEST RESULT $path"
+        rm -rf "$path"
+        return
+    fi
+    echo "[$1] FAILED -> KEEP"
+    grep "<a href=\"classes/.*#" "$index_file" | while read -r line; do
+        line=${line#<a href=\"classes/}
+        line=${line%\">*}
+        echo "$line" | sed 's/html#//'
+    done
+    echo
+}
+remove_test_result_for_success "."
+remove_test_result_for_success "app"
+for module in libs/*; do
+    if [ -d "$module" ]; then
+        remove_test_result_for_success "$module"
+    fi
+done

@@ -1,0 +1,43 @@
+<!--
+  ~ Copyright (c) 2023, tuanchauict
+  -->
+
+<!DOCTYPE html>
+<html class="dark w-full h-full" lang="en">
+<head>
+    <link href="favicon.png" rel="icon">
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+          name="viewport"/>
+    <title>Potaty</title>
+
+    <!-- Tailwind CSS (utility classes) -->
+    <link href="tailwind.css" rel="stylesheet"/>
+    <!-- SCSS compiled styles (components & theme) -->
+    <link href="main.css" rel="stylesheet"/>
+</head>
+
+<body class="w-full h-full m-0 p-0 font-ui bg-[var(--workspace-bg-color)]">
+
+<nav id="main-nav" class="fixed h-nav left-0 right-0 top-0">
+    <div id="nav-brand">
+        <h2 class="main-title">
+            <span>Potaty</span>
+        </h2>
+    </div>
+    <div id="nav-toolbar"></div>
+</nav>
+
+<main id="workspace" class="fixed top-nav left-0 right-0 bottom-0 bg-[var(--workspace-bg-color)]">
+    <div class="canvas-layout w-full h-full">
+        <div id="monoboard-canvas-container" class="absolute left-canvas-left top-canvas-top right-0 bottom-0"></div>
+        <div id="monoboard-axis-container" class="w-full h-full"></div>
+    </div>
+</main>
+
+<div id="shape-tools" class="shape-tools fixed w-shape-tools top-nav bottom-0 right-0 border-l border-l-[var(--shapetool-main-divider-color)] bg-[var(--shapetool-bg-color)] font-['Roboto',Arial,serif] text-xs"></div>
+
+<script src="Potaty.js"></script>
+</body>
+
+</html>

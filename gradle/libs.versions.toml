@@ -1,0 +1,9 @@
+[versions]
+kotlinJs = "1.8.10"
+kotlinxSerialization = "1.4.1"
+
+[libraries]
+kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version.ref = "kotlinJs" }
+kotlin-test-js = { module = "org.jetbrains.kotlin:kotlin-test-js", version.ref = "kotlinJs" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
