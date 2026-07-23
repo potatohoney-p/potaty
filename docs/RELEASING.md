@@ -15,6 +15,9 @@ Potaty does not yet have an automated public release pipeline or a stable releas
    retained MonoSketch source notices.
 10. Publish release notes that distinguish stable features, experimental integrations, breaking changes, and known limitations.
 
-Repository administrators should also verify the branch, Actions, security, and release controls in [GitHub repository settings](REPOSITORY_SETTINGS.md).
+Repository administrators must verify that `main` requires pull requests and the `Test and build`
+and `Validate container` checks, blocks force pushes and deletion, and keeps secret scanning plus
+push protection enabled. Add an approving-review requirement once a second active maintainer can
+provide independent review without blocking routine maintenance.
 
 Until those checks exist in automation, releases should be described as development snapshots rather than production-ready builds.

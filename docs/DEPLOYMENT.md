@@ -138,8 +138,8 @@ Do not expose Potaty publicly until all of the following are true:
 - browser E2E, live integration canaries, image scanning, SBOM, and rollback checks pass.
 
 The data inventory, retention gaps, and operator checklist are detailed in [Privacy and data handling](PRIVACY.md).
-The risk-ordered acceptance plan is in [the roadmap](ROADMAP.md), and the latest evidence-backed
-decision is in [the production readiness review](reviews/PRODUCTION_READINESS_REVIEW.md).
+The risk-ordered acceptance plan is in [the roadmap](ROADMAP.md), and the current verification
+surface and known gaps are documented in [Testing](TESTING.md).
 
 ## Container controls
 

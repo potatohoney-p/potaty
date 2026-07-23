@@ -301,6 +301,7 @@ gradle-app.setting
 # Local agent and QA-tool state
 .claude/settings.local.json
 .gstack/
+.run/
 
 # Local visual references supplied for design calibration, not redistributable project assets
 output_sample/

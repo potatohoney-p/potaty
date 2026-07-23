@@ -114,6 +114,6 @@ GitHub App connections are workspace-bound and worker claims now use expiring le
 and fencing tokens. Those controls are unit/integration tested, but the installation lifecycle and
 multi-instance queue semantics still need live staging evidence before a hosted release.
 
-These gaps are constraints, not hidden roadmap promises. See [DEPLOYMENT.md](DEPLOYMENT.md), the
-[production readiness review](reviews/PRODUCTION_READINESS_REVIEW.md), and the
-[roadmap](ROADMAP.md) before operating Potaty with real users or confidential data.
+These gaps are constraints, not hidden roadmap promises. See [DEPLOYMENT.md](DEPLOYMENT.md),
+[TESTING.md](TESTING.md), and the [roadmap](ROADMAP.md) before operating Potaty with real users or
+confidential data.

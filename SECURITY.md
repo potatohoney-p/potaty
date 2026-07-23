@@ -54,9 +54,9 @@ Maintainers will acknowledge a report, reproduce it, assess severity, prepare te
 - Source text may be stored for evidence and may be sent to configured external providers. Operators must publish an accurate privacy and retention policy.
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the deployment gate,
-[docs/reviews/PRODUCTION_READINESS_REVIEW.md](docs/reviews/PRODUCTION_READINESS_REVIEW.md) for the
-latest review decision, [docs/ROADMAP.md](docs/ROADMAP.md) for closure criteria, and
-[docs/PRIVACY.md](docs/PRIVACY.md) for the current data lifecycle and operator obligations.
+[docs/TESTING.md](docs/TESTING.md) for current verification and known gaps,
+[docs/ROADMAP.md](docs/ROADMAP.md) for closure criteria, and [docs/PRIVACY.md](docs/PRIVACY.md)
+for the current data lifecycle and operator obligations.
 
 ## Dependency advisory posture
 

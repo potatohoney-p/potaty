@@ -6,7 +6,7 @@ Potaty turns untrusted source material into source-grounded diagrams. Preserve e
 
 ## Design system
 
-Always read `DESIGN.md` before making visual or interaction changes. Typography, colors, spacing, responsive behavior, motion, and accessibility requirements are defined there. Do not add generic gradients, glassmorphism, decorative blobs, or uniform card grids.
+Always read `docs/DESIGN.md` before making visual or interaction changes. Typography, colors, spacing, responsive behavior, motion, and accessibility requirements are defined there. Do not add generic gradients, glassmorphism, decorative blobs, or uniform card grids.
 
 ## Engineering checks
 

@@ -23,8 +23,8 @@ Windows uses `.\gradlew.bat`. Chrome or Chromium is required by Karma browser te
 
 ## Last verified local release gate
 
-The 2026-07-17 worktree gate ran `npm ci`, `npm audit --audit-level=moderate`, and this combined
-Windows command after all production-readiness fixes:
+The 2026-07-23 worktree gate ran `npm ci`, `npm audit --audit-level=moderate`, and this combined
+Windows command after the release-hardening pass:
 
 ```powershell
 .\gradlew.bat ktlint test browserProductionWebpack :backend:installDist --no-daemon --no-parallel --console=plain
@@ -33,7 +33,7 @@ Windows command after all production-readiness fixes:
 - 95 test suites / 518 tests: 0 failures, 0 errors, 1 conditional local skip. The skipped
   PostgreSQL/pgvector claim test runs in CI with its disposable database service.
 - npm audit: 0 moderate-or-higher findings.
-- Browser bundle: 302,571 bytes gzip, below the enforced 327,680-byte ceiling.
+- Browser bundle: 302,568 bytes gzip, below the enforced 327,680-byte ceiling.
 - Backend distribution: installed successfully (79 files, 32,732,516 bytes).
 - `git diff --check`: no whitespace errors; Windows line-ending warnings only.
 - Docker was not installed on the review machine, so Compose interpolation, image build, and the
@@ -89,11 +89,10 @@ controls before checking health.
 These gaps block a hosted-production claim. Expand PostgreSQL coverage, add automated browser E2E,
 visual/accessibility checks, restore drills, and live canaries before the first stable release.
 
-The release review did run the production bundle manually through Playwright-controlled Chromium,
-including a live prompt/API round trip, storage inspection, reload recovery, console/network checks,
-and a 390×844 responsive modal pass. That evidence is documented in
-[the browser QA report](reviews/BROWSER_QA_REPORT.md), but it is intentionally not described as an
-automated repository gate.
+The production bundle has also been exercised manually through Playwright-controlled Chromium,
+including live prompt and transcript API round trips, storage inspection, reload recovery,
+console/network checks, and a 390×844 responsive pass. The English product captures under
+[`docs/assets/qa`](assets/qa) are versioned presentation evidence, not an automated repository gate.
 
 The final hardening pass additionally runs Node and ChromeHeadless regressions for fetch/body
 timeouts, manual abort and late callbacks, retry-journal capacity/storage failure, generation-owner
