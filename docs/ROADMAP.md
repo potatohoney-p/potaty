@@ -6,7 +6,7 @@ evidence-linked pipeline, but the repository is not yet a hosted multi-tenant pr
 
 ## Current verified baseline
 
-The 2026-07-17 release candidate passes the full configured JVM/JS suite, Kotlin style checks,
+The 2026-07-23 release candidate passes the full configured JVM/JS suite, Kotlin style checks,
 npm's moderate advisory gate, the production browser build, and the backend distribution build.
 Manual Chromium QA covers
 all three source journeys, keyboard/modal behavior, a 390 px viewport, console/storage checks, and
@@ -31,8 +31,9 @@ hosted service and stable `1.0` remain blocked by the P0 operational evidence be
   the documented release gate on the exact commit to be tagged.
 - Require a green GitHub-hosted CI run including Compose configuration, container build/health,
   PostgreSQL migrations, licence/notice checks, secret scanning, and the production bundle budget.
-- Enable private vulnerability reporting, branch protection, required reviews/checks, Dependabot
-  or equivalent update automation, and documented maintainer/security ownership.
+- Maintain private vulnerability reporting, branch protection, required checks, Dependabot
+  update automation, and documented maintainer/security ownership. Require an approving review
+  once a second maintainer is available so a solo maintainer cannot deadlock the repository.
 - Publish checksums, an SBOM/provenance record, changelog, known limitations, browser screenshots,
   and an explicit “no hosted-production claim” release note.
 - Re-run the dependency advisory ledger immediately before tagging; scanner exceptions need an

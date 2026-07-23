@@ -1,6 +1,6 @@
 # README and repository assets
 
-This directory contains the public-facing visuals used by Potaty's README and GitHub repository settings. The assets follow [the Potaty design system](../../DESIGN.md): quiet technical field notes, a mineral-neutral palette, semantic color, and ASCII as the visual centre of gravity.
+This directory contains the public-facing visuals used by Potaty's README and GitHub repository settings. The assets follow [the Potaty design system](../DESIGN.md): quiet technical field notes, a mineral-neutral palette, semantic color, and ASCII as the visual centre of gravity.
 
 ## Asset inventory
 
@@ -8,9 +8,9 @@ This directory contains the public-facing visuals used by Potaty's README and Gi
 |---|---:|---|---|
 | `readme-hero.svg` | 1280×640 | README opening image | Hand-authored SVG |
 | `readme-pipeline.svg` | 1200×360 | Source-to-artifact trust flow | Hand-authored SVG |
-| `qa/final-prompt-desktop.png` | 1440×1000 | Real prompt-result evidence | Production-bundle browser QA |
-| `qa/final-transcript-desktop.png` | 1440×1000 | Real transcript-result evidence | Production-bundle browser QA |
-| `qa/final-prompt-mobile.png` | 390×844 | Real responsive-result evidence | Production-bundle browser QA |
+| `qa/final-prompt-desktop.png` | 1440×1000 | English prompt-result evidence | Production-bundle browser QA |
+| `qa/final-transcript-desktop.png` | 1440×1000 | English transcript-result evidence | Production-bundle browser QA |
+| `qa/final-prompt-mobile.png` | 390×844 | English responsive-result evidence | Production-bundle browser QA |
 | `github-social-preview-art.jpg` | 1774×887 | Text-free social-card artwork | OpenAI built-in image generation, then JPEG-optimized |
 | `github-social-preview.svg` | 1280×640 | Editable social-card composition | Hand-authored SVG over the generated artwork |
 | `github-social-preview.png` | 1280×640 | Upload-ready GitHub social preview | Chromium render of the SVG composition |

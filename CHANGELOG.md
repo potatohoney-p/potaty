@@ -16,8 +16,8 @@ Notable Potaty changes are documented here. The project follows [Keep a Changelo
 - Contributor, security, architecture, deployment, testing, troubleshooting, release, conduct, and third-party licence documentation.
 - GitHub-first README artwork, real production-bundle QA screenshots, accessible asset provenance, and an upload-ready repository social preview.
 - Hardened local container assets, CI verification, dependency updates, and repository maintenance templates.
-- Risk-ordered hosted-production roadmap plus production, adversarial-code, product-flow,
-  adversarial-flow, and browser UI/UX review records.
+- Risk-ordered hosted-production roadmap plus consolidated security, testing, and browser QA
+  documentation.
 - Restored MonoSketch copyright notices throughout derived editor modules and added explicit
   upstream attribution to `NOTICE` and third-party documentation.
 

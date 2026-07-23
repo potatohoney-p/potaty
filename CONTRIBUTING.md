@@ -8,7 +8,7 @@ By participating, you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 - Search existing issues and pull requests.
 - Open an issue before a large feature, dependency, schema change, or UI redesign.
-- Read [DESIGN.md](DESIGN.md) before visual work and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before changing data flow or module boundaries.
+- Read [docs/DESIGN.md](docs/DESIGN.md) before visual work and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before changing data flow or module boundaries.
 - Never include customer data, real credentials, private repositories, proprietary fonts, or assets without redistribution rights.
 
 ## Development setup
