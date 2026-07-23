@@ -7,7 +7,7 @@
 # available — see docker-compose.yml which sets `context: .`.
 
 # ---- build stage ----------------------------------------------------------------------------
-FROM gradle:8.5-jdk17 AS build
+FROM gradle:9.6-jdk17 AS build
 WORKDIR /home/gradle/project
 
 # Copy the whole project (multi-module: backend depends on :diagram-ir and :renderer-codegen).
