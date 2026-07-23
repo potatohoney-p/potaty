@@ -56,12 +56,3 @@ updates:
       time: "03:45"
       timezone: Asia/Seoul
     open-pull-requests-limit: 3
-
-  - package-ecosystem: docker
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "04:00"
-      timezone: Asia/Seoul
-    open-pull-requests-limit: 3
