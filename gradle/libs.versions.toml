@@ -3,7 +3,7 @@ kotlinJs = "1.8.10"
 # 1.5.1 (compatible with the Kotlin 1.8.20 serialization plugin) avoids a Kotlin/JS 1.8.20
 # dev-executable IR linker crash that 1.4.1 triggers when a generated serializer is linked into a
 # Node test executable (klib + JVM serialization are unaffected).
-kotlinxSerialization = "1.5.1"
+kotlinxSerialization = "1.11.0"
 
 # --- backend (Kotlin/JVM Ktor) ---
 # NOTE: the root build applies kotlin("js") 1.8.20; the JVM backend declares its own
@@ -12,14 +12,14 @@ ktor = "2.3.13"
 # exposed-json was first published in 0.42.0; 0.41.1 has no exposed-json artifact (404).
 exposed = "0.42.0"
 hikari = "5.1.0"
-postgres = "42.7.11"
-h2 = "2.2.224"
+postgres = "42.7.13"
+h2 = "2.4.240"
 flyway = "9.22.3"
-coroutines = "1.7.3"
-logback = "1.5.34"
-kotlinxSerializationJvm = "1.6.3"
-netty = "4.1.135.Final"
-jackson = "2.18.9"
+coroutines = "1.11.0"
+logback = "1.5.38"
+kotlinxSerializationJvm = "1.11.0"
+netty = "4.2.16.Final"
+jackson = "2.22.1"
 
 [libraries]
 kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version.ref = "kotlinJs" }
