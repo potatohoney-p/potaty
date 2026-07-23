@@ -18,7 +18,7 @@ RUN chmod +x gradlew && \
     ./gradlew :backend:installDist --no-daemon -Dorg.gradle.parallel=false
 
 # ---- runtime stage --------------------------------------------------------------------------
-FROM eclipse-temurin:17-jre-jammy AS runtime
+FROM eclipse-temurin:25-jre-jammy AS runtime
 
 LABEL org.opencontainers.image.title="Potaty backend" \
       org.opencontainers.image.description="Source-grounded diagram generation API" \
