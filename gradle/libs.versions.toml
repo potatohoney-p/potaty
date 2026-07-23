@@ -8,7 +8,7 @@ kotlinxSerialization = "1.5.1"
 # --- backend (Kotlin/JVM Ktor) ---
 # NOTE: the root build applies kotlin("js") 1.8.20; the JVM backend declares its own
 # kotlin("jvm") plugin version inline in backend/build.gradle.kts (kept in sync at 1.8.20).
-ktor = "2.3.13"
+ktor = "3.5.1"
 # exposed-json was first published in 0.42.0; 0.41.1 has no exposed-json artifact (404).
 exposed = "0.42.0"
 hikari = "5.1.0"
