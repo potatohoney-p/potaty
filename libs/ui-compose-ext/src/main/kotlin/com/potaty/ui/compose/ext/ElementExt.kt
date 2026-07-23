@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
+ */
+
+package com.potaty.ui.compose.ext
+
+import androidx.compose.web.events.SyntheticMouseEvent
+import org.jetbrains.compose.web.attributes.AttrsScope
+import org.w3c.dom.Element
+
+/**
+ * Binds classes, each element can be either a `String` or a `Pair<String, Boolean>`.
+ */
+fun AttrsScope<Element>.classes(vararg classToAvailability: Any) {
+    val classes = classToAvailability.mapNotNull {
+        if (it is Pair<*, *>) {
+            if (it.second as Boolean) it.first.toString() else null
+        } else {
+            it.toString()
+        }
+    }
+    classes(classes)
+}
+
+fun AttrsScope<Element>.onConsumeClick(listener: (SyntheticMouseEvent) -> Unit) {
+    onClick {
+        listener(it)
+        it.preventDefault()
+        it.stopPropagation()
+    }
+}

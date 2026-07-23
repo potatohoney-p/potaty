@@ -1,14 +1,24 @@
 {
-  "name": "potaty-tailwind",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "tailwind:build": "tailwindcss -i ./src/main/css/tailwind.css -o ./build/processedResources/js/main/tailwind.css --minify",
-    "tailwind:watch": "tailwindcss -i ./src/main/css/tailwind.css -o ./build/processedResources/js/main/tailwind.css --watch"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.4.0",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32"
-  }
+    "name": "potaty-web-build",
+    "version": "0.0.0",
+    "description": "Build-time CSS tooling for the Potaty web application.",
+    "private": true,
+    "license": "Apache-2.0",
+    "engines": {
+        "node": ">=22",
+        "npm": ">=10"
+    },
+    "scripts": {
+        "tailwind:build": "tailwindcss -i ./src/main/css/tailwind.css -o ./build/processedResources/js/main/tailwind.css --minify",
+        "tailwind:watch": "tailwindcss -i ./src/main/css/tailwind.css -o ./build/processedResources/js/main/tailwind.css --watch"
+    },
+    "dependencies": {
+        "@kfonts/d2coding": "0.2.0",
+        "pretendard": "1.3.9"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.16",
+        "postcss": "^8.4.32",
+        "tailwindcss": "^3.4.0"
+    }
 }

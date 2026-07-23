@@ -1,0 +1,111 @@
+# Copyright (c) 2026, Potaty
+#
+# Local development stack: Postgres + the backend. Copy `.env.example` to `.env`, replace every
+# required value, then run `docker compose up --build`. This file does not enable development auth
+# unless the operator opts in. It is not a substitute for a production IdP, KMS, TLS proxy,
+# backup policy, or the deployment checks in docs/DEPLOYMENT.md.
+#
+# pgvector/pgvector carries the vector extension used by the PostgreSQL migrations.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${POTATY_DB_NAME:-potaty}"
+      POSTGRES_USER: "${POTATY_DB_USER:-potaty}"
+      POSTGRES_PASSWORD: "${POTATY_DB_PASSWORD:?Set POTATY_DB_PASSWORD in .env}"
+    volumes:
+      - potaty_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    restart: unless-stopped
+    init: true
+    build:
+      # Repo root context so the multi-module Gradle build (:backend + :diagram-ir + :renderer-codegen) is visible.
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POTATY_ENV: "${POTATY_ENV:-development}"
+      POTATY_HOST: "0.0.0.0"
+      POTATY_PORT: "8080"
+      POTATY_DB_MODE: "postgres"
+      POTATY_DB_URL: "jdbc:postgresql://postgres:5432/${POTATY_DB_NAME:-potaty}"
+      POTATY_DB_USER: "${POTATY_DB_USER:-potaty}"
+      POTATY_DB_PASSWORD: "${POTATY_DB_PASSWORD:?Set POTATY_DB_PASSWORD in .env}"
+      POTATY_DB_POOL_SIZE: "${POTATY_DB_POOL_SIZE:-10}"
+      POTATY_DB_MIGRATE: "${POTATY_DB_MIGRATE:-true}"
+      # Local-only escape hatch. Leave false anywhere reachable by other people.
+      POTATY_AUTH_MODE: "${POTATY_AUTH_MODE:-jwt}"
+      POTATY_DEV_AUTH: "${POTATY_DEV_AUTH:-false}"
+      POTATY_DEV_TOKEN: "${POTATY_DEV_TOKEN:-}"
+      POTATY_DEV_WORKSPACE_ID: "${POTATY_DEV_WORKSPACE_ID:-00000000-0000-0000-0000-000000000001}"
+      POTATY_DEV_USER_ID: "${POTATY_DEV_USER_ID:-00000000-0000-0000-0000-000000000002}"
+      POTATY_DEV_PROJECT_ID: "${POTATY_DEV_PROJECT_ID:-00000000-0000-0000-0000-000000000010}"
+      POTATY_JWT_ISSUER: "${POTATY_JWT_ISSUER:-}"
+      POTATY_JWT_AUDIENCE: "${POTATY_JWT_AUDIENCE:-}"
+      POTATY_JWT_SECRET: "${POTATY_JWT_SECRET:-}"
+      POTATY_JWT_TTL_SECONDS: "${POTATY_JWT_TTL_SECONDS:-3600}"
+      POTATY_CORS_ORIGINS: "${POTATY_CORS_ORIGINS:-http://localhost:8080}"
+      # This implementation is a local envelope key, not production KMS integration.
+      POTATY_CREDENTIAL_KMS_KEY: "${POTATY_CREDENTIAL_KMS_KEY:?Set a random local key in .env}"
+      POTATY_ALLOW_PROVIDER_OAUTH: "${POTATY_ALLOW_PROVIDER_OAUTH:-false}"
+      POTATY_WORKSPACE_MONTHLY_COST_CAP_USD: "${POTATY_WORKSPACE_MONTHLY_COST_CAP_USD:-50}"
+      POTATY_TRANSCRIPTION_USD_PER_MINUTE: "${POTATY_TRANSCRIPTION_USD_PER_MINUTE:-0.006}"
+      POTATY_TRANSCRIPTION_RESERVATION_BITRATE_BPS: "${POTATY_TRANSCRIPTION_RESERVATION_BITRATE_BPS:-4000}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      OPENAI_BASE_URL: "${OPENAI_BASE_URL:-https://api.openai.com}"
+      OPENAI_CHEAP_STRUCTURED_MODEL: "${OPENAI_CHEAP_STRUCTURED_MODEL:-gpt-4o-mini}"
+      OPENAI_MID_STRUCTURED_MODEL: "${OPENAI_MID_STRUCTURED_MODEL:-gpt-4o}"
+      OPENAI_HIGH_REASONING_MODEL: "${OPENAI_HIGH_REASONING_MODEL:-o1}"
+      OPENAI_EMBEDDING_MODEL: "${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}"
+      OPENAI_TRANSCRIPTION_MODEL: "${OPENAI_TRANSCRIPTION_MODEL:-whisper-1}"
+      ANTHROPIC_BASE_URL: "${ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+      ANTHROPIC_CHEAP_STRUCTURED_MODEL: "${ANTHROPIC_CHEAP_STRUCTURED_MODEL:-claude-3-5-haiku-latest}"
+      ANTHROPIC_MID_STRUCTURED_MODEL: "${ANTHROPIC_MID_STRUCTURED_MODEL:-claude-3-5-sonnet-latest}"
+      ANTHROPIC_HIGH_REASONING_MODEL: "${ANTHROPIC_HIGH_REASONING_MODEL:-claude-opus-4-latest}"
+      GITHUB_API_BASE_URL: "${GITHUB_API_BASE_URL:-https://api.github.com}"
+      GITHUB_WEB_BASE_URL: "${GITHUB_WEB_BASE_URL:-https://github.com}"
+      GITHUB_APP_ID: "${GITHUB_APP_ID:-}"
+      GITHUB_APP_PRIVATE_KEY: "${GITHUB_APP_PRIVATE_KEY:-}"
+      GITHUB_WEBHOOK_SECRET: "${GITHUB_WEBHOOK_SECRET:-}"
+      GITHUB_APP_SLUG: "${GITHUB_APP_SLUG:-}"
+      GITHUB_OAUTH_CLIENT_ID: "${GITHUB_OAUTH_CLIENT_ID:-}"
+      GITHUB_OAUTH_CLIENT_SECRET: "${GITHUB_OAUTH_CLIENT_SECRET:-}"
+      GITHUB_OAUTH_CALLBACK_URL: "${GITHUB_OAUTH_CALLBACK_URL:-}"
+      POTATY_PUBLIC_BASE_URL: "${POTATY_PUBLIC_BASE_URL:-}"
+      GITHUB_CONNECT_STATE_SECRET: "${GITHUB_CONNECT_STATE_SECRET:-}"
+      GITHUB_CONNECT_STATE_TTL_SECONDS: "${GITHUB_CONNECT_STATE_TTL_SECONDS:-900}"
+      GITHUB_MAX_FILE_BYTES: "${GITHUB_MAX_FILE_BYTES:-1000000}"
+      GITHUB_MAX_FILES_PER_INDEX: "${GITHUB_MAX_FILES_PER_INDEX:-2000}"
+    ports:
+      - "127.0.0.1:${POTATY_HTTP_PORT:-8090}:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  potaty_pgdata:

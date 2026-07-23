@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -15,8 +16,8 @@ dependencies {
     implementation(projects.htmlDsl)
     implementation(projects.lifecycle)
     implementation(projects.livedata)
-    implementation(projects.monobitmap)
-    implementation(projects.monoboard)
+    implementation(projects.potatyBitmap)
+    implementation(projects.potatyBoard)
     implementation(projects.shape)
 
     implementation(libs.kotlin.stdlib.js)

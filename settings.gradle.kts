@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 rootProject.name = "Potaty"
@@ -16,9 +17,9 @@ val moduleMap = mapOf(
     "keycommand" to "libs/keycommand",
     "lifecycle" to "libs/lifecycle",
     "livedata" to "libs/livedata",
-    "monobitmap" to "libs/monobitmap",
-    "monobitmap-manager" to "libs/monobitmap-manager",
-    "monoboard" to "libs/monoboard",
+    "potaty-bitmap" to "libs/potaty-bitmap",
+    "potaty-bitmap-manager" to "libs/potaty-bitmap-manager",
+    "potaty-board" to "libs/potaty-board",
     "shape" to "libs/shape",
     "shape-clipboard" to "libs/shape-clipboard",
     "shape-interaction-bound" to "libs/shape-interaction-bound",
@@ -34,7 +35,19 @@ val moduleMap = mapOf(
     "ui-modal" to "libs/ui-modal",
     "ui-theme" to "libs/ui-theme",
     "ui-toolbar" to "libs/ui-toolbar",
-    "uuid" to "libs/uuid"
+    "uuid" to "libs/uuid",
+
+    // --- Anything-to-Diagram: source-grounded pipeline (shared, engine-reusing) ---
+    "diagram-ir" to "shared/diagram-ir",
+    "layout-engine" to "shared/layout-engine",
+    "render-core" to "shared/render-core",
+    "renderer-ascii" to "shared/renderer-ascii",
+    "renderer-codegen" to "shared/renderer-codegen",
+    "diagram-demo" to "shared/diagram-demo",
+    "workbench-client" to "shared/workbench-client",
+
+    // --- Anything-to-Diagram: Kotlin/JVM Ktor backend (source ingestion, jobs, LLM, persistence) ---
+    "backend" to "backend"
 )
 
 moduleMap.entries.forEach { (name, path) ->

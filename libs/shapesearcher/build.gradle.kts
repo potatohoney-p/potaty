@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -13,7 +14,7 @@ repositories {
 dependencies {
     implementation(projects.commons)
     implementation(projects.graphicsgeo)
-    implementation(projects.monobitmap)
+    implementation(projects.potatyBitmap)
     implementation(projects.shape)
 
     testImplementation(libs.kotlin.test.js)

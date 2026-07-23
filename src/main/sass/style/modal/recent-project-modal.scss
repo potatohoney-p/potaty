@@ -42,7 +42,7 @@ $themeMap: (
         flex-grow: 0;
 
         color: $modal-content-text-color;
-        font-family: $monospaceFont;
+        font-family: $uiTextFont;
     }
 
     .filter-container {
@@ -58,7 +58,7 @@ $themeMap: (
             border: 1px solid $modal-text-field-border;
             background: none;
             color: $modal-text-field-color;
-            font-family: $monospaceFont;
+            font-family: $uiTextFont;
 
             &:hover,
             &:focus {

@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose an outcome or improvement for Potaty.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the user problem before the implementation. Large architectural changes should
+        begin with an issue or discussion so maintainers can agree on scope and trust boundaries.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who has this problem, and what are they unable to accomplish today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe observable success without prescribing a specific implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Optional implementation or interaction ideas, including alternatives considered.
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and examples
+      description: Use synthetic or public examples only. Do not paste private transcripts or source code.
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact review
+      options:
+        - label: I considered privacy and data-retention implications.
+        - label: I considered accessibility and keyboard use.
+        - label: I considered backwards compatibility for Diagram IR and APIs.

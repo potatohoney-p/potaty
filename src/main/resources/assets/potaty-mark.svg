@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <title>Potaty</title>
+  <path d="M7 5.5h12.5L25 11v15.5H7z" stroke="#f2efe4" stroke-width="1.5"/>
+  <path d="M19.5 5.5V11H25M11 14h10M11 18h7M11 22h10" stroke="#f2efe4" stroke-width="1.5"/>
+  <path d="M4 9v14" stroke="#98aa8f" stroke-width="1.5" stroke-dasharray="2 2"/>
+  <circle cx="4" cy="6" r="1.5" fill="#98aa8f"/>
+  <circle cx="4" cy="26" r="1.5" fill="#98aa8f"/>
+</svg>

@@ -1,43 +1,325 @@
 <!--
   ~ Copyright (c) 2023, tuanchauict
+  ~ Copyright (c) 2026, Potaty
   -->
 
 <!DOCTYPE html>
-<html class="dark w-full h-full" lang="en">
+<html class="dark" lang="en">
 <head>
-    <link href="favicon.png" rel="icon">
     <meta charset="UTF-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-          name="viewport"/>
-    <title>Potaty</title>
+    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+    <meta content="#0d100e" name="theme-color"/>
+    <meta content="Turn prompts, transcripts, and GitHub repositories into source-grounded ASCII diagrams." name="description"/>
+    <meta content="no-referrer" name="referrer"/>
+    <meta content="default-src 'self'; base-uri 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; form-action 'none'" http-equiv="Content-Security-Policy"/>
+    <link href="favicon.png" rel="icon"/>
+    <link href="assets/potaty-mark.svg" rel="mask-icon" color="#98aa8f"/>
+    <link as="font" crossorigin href="fonts/JetBrainsMono-Regular.woff2" rel="preload" type="font/woff2"/>
+    <title>Potaty — source-grounded ASCII diagrams</title>
 
-    <!-- Tailwind CSS (utility classes) -->
     <link href="tailwind.css" rel="stylesheet"/>
-    <!-- SCSS compiled styles (components & theme) -->
+    <link href="fonts/pretendardvariable-dynamic-subset.css" rel="stylesheet"/>
     <link href="main.css" rel="stylesheet"/>
 </head>
 
-<body class="w-full h-full m-0 p-0 font-ui bg-[var(--workspace-bg-color)]">
+<body class="font-ui">
+<a class="skip-link" href="#studio-primary">Skip to generator</a>
 
-<nav id="main-nav" class="fixed h-nav left-0 right-0 top-0">
-    <div id="nav-brand">
-        <h2 class="main-title">
-            <span>Potaty</span>
-        </h2>
-    </div>
-    <div id="nav-toolbar"></div>
-</nav>
+<!-- The original manual editor remains available under the studio. -->
+<div aria-hidden="true" class="editor-shell" id="editor-shell" inert>
+    <nav class="fixed h-nav left-0 right-0 top-0" id="main-nav">
+        <div id="nav-brand">
+            <h2 class="main-title"><span>Potaty</span></h2>
+        </div>
+        <div id="nav-toolbar"></div>
+        <button aria-label="Open AI diagram studio" class="editor-studio-button" id="studio-open-button" type="button">
+            <span aria-hidden="true">⌁</span>
+            Generate
+        </button>
+    </nav>
 
-<main id="workspace" class="fixed top-nav left-0 right-0 bottom-0 bg-[var(--workspace-bg-color)]">
-    <div class="canvas-layout w-full h-full">
-        <div id="monoboard-canvas-container" class="absolute left-canvas-left top-canvas-top right-0 bottom-0"></div>
-        <div id="monoboard-axis-container" class="w-full h-full"></div>
-    </div>
-</main>
+    <main class="fixed top-nav left-0 right-0 bottom-0 bg-[var(--workspace-bg-color)]" id="workspace">
+        <div class="canvas-layout w-full h-full">
+            <div class="absolute left-canvas-left top-canvas-top right-0 bottom-0" id="potaty-canvas-container"></div>
+            <div class="w-full h-full" id="potaty-axis-container"></div>
+        </div>
+    </main>
 
-<div id="shape-tools" class="shape-tools fixed w-shape-tools top-nav bottom-0 right-0 border-l border-l-[var(--shapetool-main-divider-color)] bg-[var(--shapetool-bg-color)] font-['Roboto',Arial,serif] text-xs"></div>
+    <div class="shape-tools fixed w-shape-tools top-nav bottom-0 right-0 border-l border-l-[var(--shapetool-main-divider-color)] bg-[var(--shapetool-bg-color)] text-xs"
+         id="shape-tools"></div>
+</div>
+
+<div class="studio-shell" id="potaty-studio">
+    <div aria-hidden="true" class="studio-grid"></div>
+
+    <header class="studio-header">
+        <a aria-label="Potaty home" class="studio-brand" href="#studio-primary">
+            <img alt="" height="28" src="assets/potaty-mark.svg" width="28"/>
+            <span class="studio-brand-word">Potaty</span>
+            <span class="studio-brand-tag">ASCII intelligence</span>
+        </a>
+
+        <div class="studio-header-actions">
+            <span aria-live="polite" class="connection-state" id="connection-state" role="status">
+                <span aria-hidden="true" class="connection-dot"></span>
+                <span id="connection-label">Local workspace</span>
+            </span>
+            <button class="text-button" data-action="open-editor" type="button">Manual editor</button>
+            <button aria-controls="settings-layer" aria-haspopup="dialog" class="icon-button" data-action="open-settings" type="button">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15.25A3.25 3.25 0 1 0 12 8.75a3.25 3.25 0 0 0 0 6.5Zm7.15-1.8.06-1.45-.06-1.45 1.8-1.4-2-3.46-2.22.9a7.83 7.83 0 0 0-2.5-1.45L13.9 2.75h-4l-.33 2.39a7.83 7.83 0 0 0-2.5 1.45l-2.22-.9-2 3.46 1.8 1.4L4.6 12l.06 1.45-1.8 1.4 2 3.46 2.22-.9a7.83 7.83 0 0 0 2.5 1.45l.33 2.39h4l.33-2.39a7.83 7.83 0 0 0 2.5-1.45l2.22.9 2-3.46-1.8-1.4Z"/></svg>
+                <span class="sr-only">Connection settings</span>
+            </button>
+        </div>
+    </header>
+
+    <main id="studio-primary">
+        <section aria-labelledby="studio-title" class="studio-input-view" id="studio-input-view">
+            <div class="studio-intro">
+                <p class="eyebrow"><span aria-hidden="true">01</span> Source-grounded diagram studio</p>
+                <h1 id="studio-title">Turn the messy part<br/>into a clear <span>ASCII map.</span></h1>
+                <p class="studio-lede">Describe a system, drop a call transcript, or point Potaty at a repository. You get a diagram you can inspect, copy, and keep in Git.</p>
+
+                <ul class="trust-list" aria-label="Product guarantees">
+                    <li><span aria-hidden="true">✓</span> Evidence stays attached</li>
+                    <li><span aria-hidden="true">✓</span> Secrets are redacted before generation</li>
+                    <li><span aria-hidden="true">✓</span> Output remains plain text</li>
+                </ul>
+            </div>
+
+            <div class="studio-composer" id="studio-composer">
+                <div aria-label="Input source" aria-orientation="horizontal" class="source-tabs" role="tablist">
+                    <button aria-controls="source-panel-prompt" aria-selected="true" class="source-tab is-active" data-mode="prompt" id="source-tab-prompt" role="tab" tabindex="0" type="button">
+                        <span aria-hidden="true" class="source-tab-index">01</span>
+                        <span>Prompt</span>
+                        <small>Write or paste</small>
+                    </button>
+                    <button aria-controls="source-panel-transcript" aria-selected="false" class="source-tab" data-mode="transcript" id="source-tab-transcript" role="tab" tabindex="-1" type="button">
+                        <span aria-hidden="true" class="source-tab-index">02</span>
+                        <span>Transcript</span>
+                        <small>TXT · MD · LOG</small>
+                    </button>
+                    <button aria-controls="source-panel-github" aria-selected="false" class="source-tab" data-mode="github" id="source-tab-github" role="tab" tabindex="-1" type="button">
+                        <span aria-hidden="true" class="source-tab-index">03</span>
+                        <span>GitHub</span>
+                        <small>Public or connected</small>
+                    </button>
+                </div>
+
+                <div aria-labelledby="source-tab-prompt" class="source-panel" id="source-panel-prompt" role="tabpanel">
+                    <label class="field-label" for="prompt-input">
+                        <span>What should the diagram explain?</span>
+                        <span class="field-counter" id="prompt-counter">0 / 500,000</span>
+                    </label>
+                    <textarea aria-describedby="prompt-help" autocomplete="off" id="prompt-input" maxlength="500000" placeholder="Example: A customer signs in through the web app. The API validates the session, reads the account from PostgreSQL, then publishes an audit event to the queue."></textarea>
+                    <p class="field-help" id="prompt-help">Concrete actors and relationships produce the strongest result. Potaty marks unsupported claims instead of hiding them.</p>
+                </div>
+
+                <div aria-labelledby="source-tab-transcript" class="source-panel" hidden id="source-panel-transcript" role="tabpanel">
+                    <label class="file-drop" for="transcript-file" id="transcript-dropzone">
+                        <input accept=".txt,.md,.markdown,.log,text/plain,text/markdown" id="transcript-file" type="file"/>
+                        <span aria-hidden="true" class="file-drop-mark">↳</span>
+                        <strong>Drop a transcript here</strong>
+                        <span>or choose a TXT, Markdown, or log file · 2 MB max</span>
+                    </label>
+                    <div class="file-selection" hidden id="transcript-selection">
+                        <div>
+                            <strong id="transcript-name"></strong>
+                            <span id="transcript-meta"></span>
+                        </div>
+                        <button class="text-button" data-action="remove-transcript" type="button">Remove</button>
+                    </div>
+                    <label class="check-row">
+                        <input checked id="transcript-redact" type="checkbox"/>
+                        <span><strong>Mask likely personal data</strong><small>Email addresses, phone numbers, and account-like values are flagged before processing.</small></span>
+                    </label>
+                </div>
+
+                <div aria-labelledby="source-tab-github" class="source-panel" hidden id="source-panel-github" role="tabpanel">
+                    <label class="field-label" for="github-url"><span>Repository URL</span><span>Read-only analysis</span></label>
+                    <div class="input-with-prefix">
+                        <span aria-hidden="true">github.com/</span>
+                        <input autocomplete="off" id="github-url" inputmode="url" placeholder="owner/repository" spellcheck="false" type="text"/>
+                    </div>
+                    <div class="github-options">
+                        <label><span>Branch or ref <small>optional</small></span><input autocomplete="off" id="github-ref" placeholder="auto-detect" spellcheck="false" type="text"/></label>
+                        <button class="secondary-button" data-action="connect-github" type="button">
+                            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2.3a9.9 9.9 0 0 0-3.13 19.3c.5.1.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.72 1.02A9.47 9.47 0 0 1 12 6.94a9.5 9.5 0 0 1 2.48.33c1.89-1.29 2.72-1.02 2.72-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A9.9 9.9 0 0 0 12 2.3Z"/></svg>
+                            Connect private repos
+                        </button>
+                    </div>
+                    <p class="field-help">Public repositories work by URL. Private repositories require a configured GitHub App and explicit installation access.</p>
+                </div>
+
+                <div class="generation-options">
+                    <label for="diagram-type"><span>Diagram</span><select id="diagram-type">
+                        <option value="architecture">Architecture</option>
+                        <option value="flowchart">Flowchart</option>
+                        <option value="sequence">Sequence</option>
+                        <option value="dependency">Dependency map</option>
+                        <option value="dataflow">Data flow</option>
+                        <option value="timeline">Timeline</option>
+                        <option value="action_map">Action map</option>
+                        <option value="er">Entity relationship</option>
+                    </select></label>
+                    <label for="detail-level"><span>Detail</span><select id="detail-level">
+                        <option value="medium">Balanced</option>
+                        <option value="high">Executive</option>
+                        <option value="low">Deep technical</option>
+                    </select></label>
+                    <label for="style-profile"><span>Line style</span><select id="style-profile">
+                        <option value="potaty-slate">Slate</option>
+                        <option value="potaty-sage">Sage</option>
+                        <option value="potaty-terracotta">Terracotta</option>
+                        <option value="potaty-monochrome">Docs</option>
+                    </select></label>
+                </div>
+
+                <div class="composer-footer">
+                    <p><span aria-hidden="true">◆</span> Source content is treated as untrusted data, never as instructions.</p>
+                    <button class="primary-button" id="generate-button" type="button">
+                        <span>Generate ASCII map</span>
+                        <span aria-hidden="true">↗</span>
+                    </button>
+                </div>
+
+                <div aria-atomic="true" aria-live="polite" class="composer-message" hidden id="composer-message" role="status"></div>
+            </div>
+
+            <aside aria-label="Live ASCII preview" class="studio-preview-card">
+                <div class="preview-card-header">
+                    <span><i aria-hidden="true"></i> Preview grammar</span>
+                    <span>Potaty / 001</span>
+                </div>
+                <pre aria-label="Example architecture diagram" class="preview-ascii" id="preview-ascii">┌──────────────────┐
+│    Raw source    │
+└────────┬─────────┘
+         │ normalize
+         ▼
+╭──────────────────╮      evidence      ╭──────────────────╮
+│  Diagram planner │◀──────────────────▶│  Source chunks   │
+╰────────┬─────────╯                    ╰──────────────────╯
+         │ grounded IR
+         ▼
+┌────────────┬────────────┬────────────┐
+│   ASCII    │  Mermaid   │    D2      │
+└────────────┴────────────┴────────────┘</pre>
+                <div class="preview-card-footer"><span>Deterministic layout</span><span>Editable output</span><span>Evidence linked</span></div>
+            </aside>
+        </section>
+
+        <section aria-labelledby="workbench-title" class="studio-workbench" hidden id="studio-workbench">
+            <header class="workbench-bar">
+                <div>
+                    <button aria-label="Back to input" class="icon-button" data-action="back-to-input" type="button">
+                        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <div><p class="eyebrow">Generated artifact</p><h1 id="workbench-title">Untitled diagram</h1></div>
+                </div>
+                <div class="workbench-actions">
+                    <div aria-label="Rendering format" aria-orientation="horizontal" class="format-switch" role="tablist">
+                        <button aria-controls="diagram-output" aria-selected="true" class="is-active" data-format="ascii" id="format-ascii" role="tab" tabindex="0" type="button">ASCII</button>
+                        <button aria-controls="diagram-output" aria-selected="false" data-format="mermaid" id="format-mermaid" role="tab" tabindex="-1" type="button">Mermaid</button>
+                    </div>
+                    <button class="secondary-button" data-action="copy-output" type="button">Copy</button>
+                    <button class="secondary-button" data-action="download-output" type="button">Download</button>
+                    <button class="primary-button compact" data-action="insert-editor" type="button">Open in editor <span aria-hidden="true">↗</span></button>
+                </div>
+            </header>
+
+            <div class="workbench-grid">
+                <aside aria-label="Source summary" class="source-rail">
+                    <div class="rail-heading"><span>Source</span><span class="status-badge grounded">Source linked</span></div>
+                    <div class="source-summary" id="source-summary"></div>
+                    <div class="rail-section">
+                        <h3>Generation</h3>
+                        <ol class="stage-list" id="stage-list">
+                            <li data-stage="ingest"><i></i><span>Normalize source</span></li>
+                            <li data-stage="extract"><i></i><span>Extract structure</span></li>
+                            <li data-stage="plan"><i></i><span>Build diagram IR</span></li>
+                            <li data-stage="render"><i></i><span>Render and validate</span></li>
+                        </ol>
+                    </div>
+                    <div class="rail-section">
+                        <h3>Safety</h3>
+                        <dl class="safety-stats">
+                            <div><dt>Secrets removed</dt><dd id="secrets-count">0</dd></div>
+                            <div><dt>PII warnings</dt><dd id="pii-count">0</dd></div>
+                        </dl>
+                    </div>
+                </aside>
+
+                <section aria-label="Diagram canvas" class="diagram-stage">
+                    <div class="diagram-stage-toolbar">
+                        <span id="diagram-dimensions">Waiting for output</span>
+                        <div>
+                            <button aria-label="Decrease text size" class="icon-button small" data-action="zoom-out" type="button">−</button>
+                            <output aria-label="Diagram text size" id="zoom-value">100%</output>
+                            <button aria-label="Increase text size" class="icon-button small" data-action="zoom-in" type="button">+</button>
+                        </div>
+                    </div>
+                    <div class="diagram-paper" id="diagram-paper">
+                        <pre aria-busy="false" aria-label="Generated diagram" aria-labelledby="format-ascii" id="diagram-output" role="tabpanel" tabindex="0"></pre>
+                        <div aria-live="polite" class="generation-progress" hidden id="generation-progress" role="status">
+                            <div class="progress-symbol" aria-hidden="true"><span></span><span></span><span></span></div>
+                            <strong id="progress-title">Reading the source</strong>
+                            <span id="progress-detail">Preparing a grounded diagram…</span>
+                            <div aria-hidden="true" class="progress-track"><i id="progress-bar"></i></div>
+                            <small id="progress-elapsed">00:00</small>
+                        </div>
+                    </div>
+                </section>
+
+                <aside aria-label="Diagram inspector" class="inspector-rail">
+                    <div class="rail-heading"><span>Evidence & quality</span><span id="review-status">Review</span></div>
+                    <div class="quality-overview">
+                        <div class="quality-score"><span id="coverage-score">—</span><small>evidence</small></div>
+                        <div><strong id="quality-title">Generating…</strong><p id="quality-copy">Coverage and unsupported claims will appear here.</p></div>
+                    </div>
+                    <div aria-label="Evidence coverage" class="coverage-bars">
+                        <div class="coverage-row"><span id="node-coverage-title">Nodes</span><output aria-labelledby="node-coverage-title" id="node-coverage-label">—</output><i aria-hidden="true"><b id="node-coverage-bar"></b></i></div>
+                        <div class="coverage-row"><span id="edge-coverage-title">Edges</span><output aria-labelledby="edge-coverage-title" id="edge-coverage-label">—</output><i aria-hidden="true"><b id="edge-coverage-bar"></b></i></div>
+                    </div>
+                    <div class="inspector-section">
+                        <h3>Diagram facts <span id="fact-count">0</span></h3>
+                        <div class="fact-list" id="fact-list"></div>
+                    </div>
+                    <div class="inspector-section">
+                        <h3>Warnings <span id="warning-count">0</span></h3>
+                        <div class="warning-list" id="warning-list"><p class="empty-copy">No warnings yet.</p></div>
+                    </div>
+                </aside>
+            </div>
+
+            <footer class="workbench-footer">
+                <div aria-live="polite" id="workbench-status" role="status"><span aria-hidden="true">●</span> Preparing generation</div>
+                <div><kbd>⌘/Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> copy <span aria-hidden="true">·</span> Output is plain text</div>
+            </footer>
+        </section>
+    </main>
+
+    <footer class="studio-footer">
+        <span>Open source · Apache 2.0</span>
+        <span>Source-grounded by design</span>
+        <span>v1 preview</span>
+    </footer>
+</div>
+
+<div aria-hidden="true" class="settings-layer" hidden id="settings-layer">
+    <div aria-hidden="true" class="settings-backdrop" data-action="close-settings"></div>
+    <section aria-describedby="settings-intro" aria-labelledby="settings-title" aria-modal="true" class="settings-dialog" role="dialog" tabindex="-1">
+        <header><div><p class="eyebrow">Workspace connection</p><h2 id="settings-title">Runtime settings</h2></div><button aria-label="Close settings" class="icon-button" data-action="close-settings" type="button">×</button></header>
+        <p class="settings-intro" id="settings-intro">The API URL and project ID stay in this tab. The access token stays only in page memory and is cleared on reload.</p>
+        <label><span>API origin <small>without /api/v1</small></span><input autocomplete="url" id="settings-api-url" placeholder="http://localhost:8090" spellcheck="false" type="url"/></label>
+        <label><span>Access token</span><input autocomplete="off" id="settings-token" placeholder="Development token or JWT" spellcheck="false" type="password"/></label>
+        <label><span>Project ID</span><input id="settings-project-id" spellcheck="false" type="text"/></label>
+        <label><span>GitHub App install URL <small>optional</small></span><input autocomplete="url" id="settings-github-url" placeholder="https://github.com/apps/your-app/installations/new" spellcheck="false" type="url"/></label>
+        <div class="settings-note"><span aria-hidden="true">i</span><p><strong>Production note</strong> Disable development auth and provide signed workspace JWTs. Never embed a production token in the static bundle.</p></div>
+        <footer><button class="text-button" data-action="reset-settings" type="button">Reset local defaults</button><button class="primary-button compact" data-action="save-settings" type="button">Save for this session</button></footer>
+    </section>
+</div>
+
+<div aria-atomic="true" aria-live="polite" class="toast-region" id="toast-region" role="status"></div>
 
 <script src="Potaty.js"></script>
 </body>
-
 </html>

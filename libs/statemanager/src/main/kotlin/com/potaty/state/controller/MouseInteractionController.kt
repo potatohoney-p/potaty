@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
+ */
+
+package com.potaty.state.controller
+
+import com.potaty.actionmanager.ActionManager
+import com.potaty.actionmanager.OneTimeActionType
+import com.potaty.actionmanager.RetainableActionType
+import com.potaty.common.post
+import com.potaty.graphics.geo.MousePointer
+import com.potaty.shape.selection.SelectedShapeManager
+import com.potaty.state.command.CommandEnvironment
+import com.potaty.state.command.MouseCommandFactory
+import com.potaty.state.command.mouse.HoverShapeManager
+import com.potaty.state.command.mouse.MouseCommand
+
+/**
+ * A controller class specific for mouse interaction.
+ */
+internal class MouseInteractionController(
+    private val environment: CommandEnvironment,
+    private val actionManager: ActionManager,
+    private val requestRedraw: () -> Unit
+) {
+    val currentRetainableActionType: RetainableActionType
+        get() = actionManager.retainableActionLiveData.value
+
+    var currentMouseCommand: MouseCommand? = null
+        private set
+
+    private val lineConnectHoverShapeManager = HoverShapeManager.forLineConnectHover()
+    private val hoverShapeManager = HoverShapeManager.forHoverShape()
+
+    fun reset() {
+        lineConnectHoverShapeManager.resetCache()
+        hoverShapeManager.resetCache()
+    }
+
+    fun onMouseEvent(mousePointer: MousePointer) {
+        if (mousePointer is MousePointer.Down || mousePointer is MousePointer.Up) {
+            reset()
+        }
+        if (mousePointer is MousePointer.DoubleClick) {
+            val targetedShape =
+                environment.getSelectedShapes()
+                    .firstOrNull { it.contains(mousePointer.boardCoordinate) }
+            actionManager.setOneTimeAction(OneTimeActionType.EditSelectedShape(targetedShape))
+            return
+        }
+
+        if (currentMouseCommand == null) {
+            detectHoverShape(mousePointer)
+        }
+
+        val mouseCommand =
+            MouseCommandFactory.getCommand(environment, mousePointer, currentRetainableActionType)
+                ?: currentMouseCommand
+                ?: return
+
+        currentMouseCommand = mouseCommand
+
+        environment.enterEditingMode()
+        val commandResultType = mouseCommand.execute(environment, mousePointer)
+
+        if (commandResultType == MouseCommand.CommandResultType.DONE) {
+            environment.exitEditingMode(true)
+        }
+
+        if (commandResultType == MouseCommand.CommandResultType.DONE ||
+            commandResultType == MouseCommand.CommandResultType.WORKING_PHASE2
+        ) {
+            lineConnectHoverShapeManager.resetCache()
+            currentMouseCommand = null
+            requestRedraw()
+            // Avoid click when adding shape cause shape selection command
+            post { actionManager.setRetainableAction(RetainableActionType.IDLE) }
+        }
+    }
+
+    private fun detectHoverShape(mousePointer: MousePointer) {
+        val (hoverShape, type) = when (currentRetainableActionType) {
+            RetainableActionType.ADD_LINE -> {
+                val hoverShape = lineConnectHoverShapeManager.getHoverShape(
+                    environment,
+                    mousePointer.boardCoordinate
+                )
+                hoverShape to SelectedShapeManager.ShapeFocusType.LINE_CONNECTING
+            }
+
+            RetainableActionType.IDLE -> {
+                val hoverShape =
+                    if (!environment.isOnInteractionPoint(mousePointer)) {
+                        // Only hover shape when the mouse is not on interaction points of the
+                        // current selected shapes
+                        hoverShapeManager.getHoverShape(environment, mousePointer.boardCoordinate)
+                    } else {
+                        null
+                    }
+
+                hoverShape to SelectedShapeManager.ShapeFocusType.SELECT_MODE_HOVER
+            }
+
+            RetainableActionType.ADD_RECTANGLE,
+            RetainableActionType.ADD_TEXT -> {
+                null
+            }
+        } ?: return
+        environment.setFocusingShape(hoverShape, type)
+        requestRedraw()
+    }
+
+    private fun CommandEnvironment.isOnInteractionPoint(mousePointer: MousePointer): Boolean {
+        val pointPx = when (mousePointer) {
+            is MousePointer.Down -> mousePointer.pointPx
+            is MousePointer.Move -> mousePointer.pointPx
+            MousePointer.Idle,
+            is MousePointer.Drag,
+            is MousePointer.Up,
+            is MousePointer.Click,
+            is MousePointer.DoubleClick -> null
+        } ?: return false
+        return getInteractionPoint(pointPx) != null
+    }
+}

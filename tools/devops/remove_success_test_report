@@ -2,6 +2,7 @@
 
 #
 # Copyright (c) 2023, tuanchauict
+# Copyright (c) 2023, Potaty
 #
 
 remove_test_result_for_success() {

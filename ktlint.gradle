@@ -14,6 +14,10 @@ task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
     mainClass = "com.pinterest.ktlint.Main"
+    // ktlint 0.49 embeds IntelliJ PSI code which reflectively inspects Throwable on JDK 17.
+    // Without this narrowly scoped module opening, auto-format can fail part-way through and
+    // leave a partially formatted worktree.
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
     args "**/*.kt"
     // to generate report in checkstyle format prepend following args:
     // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
@@ -27,5 +31,6 @@ task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     classpath = configurations.ktlint
     mainClass = "com.pinterest.ktlint.Main"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
     args "-F", "**/*.kt"
 }

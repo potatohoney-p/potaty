@@ -17,7 +17,7 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        font-family: $monospaceFont;
+        font-family: $uiTextFont;
         color: var(--modal-content-color);
     }
 
@@ -75,6 +75,7 @@
             color: var(--keyboard-content-key-color);
             line-height: 1.2;
             margin-right: 4px;
+            font-family: $monospaceFont;
 
             &.bold {
                 font-weight: bold;

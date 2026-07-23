@@ -1,4 +1,12 @@
 @font-face {
+    font-family: 'D2Coding';
+    src: url('D2Coding.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
     font-family: 'JetBrains Mono';
     src: url('JetBrainsMono-Bold.woff2') format('woff2');
     font-weight: bold;
@@ -30,3 +38,14 @@
     font-display: swap;
 }
 
+/*
+ * Samsung Sharp Sans is intentionally resolved from a locally installed or deployment-provided
+ * licensed copy. Potaty does not redistribute Samsung's proprietary font binaries.
+ */
+@font-face {
+    font-family: 'Samsung Sharp Sans';
+    src: local('Samsung Sharp Sans'), local('SamsungSharpSans');
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}

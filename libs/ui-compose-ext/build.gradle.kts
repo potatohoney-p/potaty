@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {

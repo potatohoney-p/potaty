@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -20,9 +21,9 @@ dependencies {
     implementation(projects.keycommand)
     implementation(projects.lifecycle)
     implementation(projects.livedata)
-    implementation(projects.monobitmap)
-    implementation(projects.monobitmapManager)
-    implementation(projects.monoboard)
+    implementation(projects.potatyBitmap)
+    implementation(projects.potatyBitmapManager)
+    implementation(projects.potatyBoard)
     implementation(projects.shape)
     implementation(projects.shapeClipboard)
     implementation(projects.shapeInteractionBound)

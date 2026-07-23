@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Test and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: potaty_test
+          POSTGRES_USER: potaty
+          POSTGRES_PASSWORD: ci-only-postgres-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U potaty -d potaty_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      POTATY_TEST_POSTGRES_URL: jdbc:postgresql://127.0.0.1:5432/potaty_test
+      POTATY_TEST_POSTGRES_USER: potaty
+      POTATY_TEST_POSTGRES_PASSWORD: ci-only-postgres-password
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@90ddb51e90a5fd9ba75f40cf85156b7b41bf76a3 # v6
+
+      - name: Install locked JavaScript dependencies
+        run: npm ci
+
+      - name: Audit JavaScript dependencies
+        run: npm audit --audit-level=moderate
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
+
+      - name: Verify Kotlin style
+        run: ./gradlew ktlint --no-daemon --no-parallel
+
+      - name: Test and build release artifacts
+        run: ./gradlew test browserProductionWebpack :backend:installDist --no-daemon --no-parallel
+
+  container:
+    name: Validate container
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      POTATY_DB_PASSWORD: ci-only-postgres-password
+      POTATY_DEV_TOKEN: ci-only-development-token
+      POTATY_CREDENTIAL_KMS_KEY: ci-only-local-envelope-key
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      - name: Validate Compose configuration
+        run: docker compose config --quiet
+
+      - name: Build backend container
+        run: docker build --file backend/Dockerfile --tag potaty-backend:ci .
+
+      - name: Smoke-test hardened backend container
+        run: |
+          docker run --detach --name potaty-backend-smoke \
+            --init \
+            --read-only \
+            --tmpfs /tmp:rw,size=128m,mode=1777 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges:true \
+            --publish 127.0.0.1:18080:8080 \
+            --env POTATY_AUTH_MODE=dev \
+            --env POTATY_DEV_AUTH=true \
+            --env POTATY_DEV_TOKEN=ci-only-development-token \
+            --env POTATY_CREDENTIAL_KMS_KEY=ci-only-local-envelope-key \
+            potaty-backend:ci
+
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:18080/health > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          docker logs potaty-backend-smoke
+          exit 1
+
+      - name: Remove smoke-test container
+        if: always()
+        run: docker rm --force potaty-backend-smoke 2>/dev/null || true

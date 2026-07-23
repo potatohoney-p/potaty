@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -15,7 +16,7 @@ dependencies {
     implementation(projects.commons)
     implementation(projects.graphicsgeo)
     implementation(projects.livedata)
-    implementation(projects.monobitmap)
+    implementation(projects.potatyBitmap)
     implementation(projects.uuid)
 
     implementation(libs.kotlinx.serialization.json)

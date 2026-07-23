@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
+ */
+
+package com.potaty.shape.shape
+
+import com.potaty.shape.serialization.SerializableGroup
+
+/**
+ * A special [Group] for the root group of the file.
+ * This group contains some extra information for storing and restoring from file.
+ */
+class RootGroup : Group {
+    constructor(id: String?) : super(id, parentId = null)
+    constructor(serializableGroup: SerializableGroup) : super(serializableGroup, parentId = null)
+}

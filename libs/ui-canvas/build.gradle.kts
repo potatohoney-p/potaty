@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -16,7 +17,7 @@ dependencies {
     implementation(projects.htmlDsl)
     implementation(projects.lifecycle)
     implementation(projects.livedata)
-    implementation(projects.monoboard)
+    implementation(projects.potatyBoard)
     implementation(projects.shapeInteractionBound)
     implementation(projects.uiAppStateManager)
     implementation(projects.uiModal)

@@ -1,0 +1,46 @@
+name: Setup or usage question
+description: Ask for help using or contributing to Potaty.
+title: "[Question]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues and read the troubleshooting guide first. Questions must use
+        synthetic or redacted examples. Security vulnerabilities belong in the private report form.
+
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      options:
+        - Local development setup
+        - Prompt or transcript generation
+        - GitHub integration
+        - Diagram rendering or editing
+        - Self-hosting
+        - Contributing
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe the intended outcome and what you have already tried.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and relevant output
+      description: Include versions and redacted command output when relevant.
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Sensitive-data check
+      options:
+        - label: I removed secrets, personal data, private repository content, and proprietary source material.
+          required: true

@@ -1,9 +1,70 @@
 [versions]
 kotlinJs = "1.8.10"
-kotlinxSerialization = "1.4.1"
+# 1.5.1 (compatible with the Kotlin 1.8.20 serialization plugin) avoids a Kotlin/JS 1.8.20
+# dev-executable IR linker crash that 1.4.1 triggers when a generated serializer is linked into a
+# Node test executable (klib + JVM serialization are unaffected).
+kotlinxSerialization = "1.5.1"
+
+# --- backend (Kotlin/JVM Ktor) ---
+# NOTE: the root build applies kotlin("js") 1.8.20; the JVM backend declares its own
+# kotlin("jvm") plugin version inline in backend/build.gradle.kts (kept in sync at 1.8.20).
+ktor = "2.3.13"
+# exposed-json was first published in 0.42.0; 0.41.1 has no exposed-json artifact (404).
+exposed = "0.42.0"
+hikari = "5.1.0"
+postgres = "42.7.11"
+h2 = "2.2.224"
+flyway = "9.22.3"
+coroutines = "1.7.3"
+logback = "1.5.34"
+kotlinxSerializationJvm = "1.6.3"
+netty = "4.1.135.Final"
+jackson = "2.18.9"
 
 [libraries]
 kotlin-stdlib-js = { module = "org.jetbrains.kotlin:kotlin-stdlib-js", version.ref = "kotlinJs" }
 kotlin-test-js = { module = "org.jetbrains.kotlin:kotlin-test-js", version.ref = "kotlinJs" }
 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# --- backend: kotlinx ---
+# The JVM backend uses a newer kotlinx-serialization-json compatible with Ktor 2.3.12.
+kotlinx-serialization-json-jvm = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJvm" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+
+# --- backend: Ktor server ---
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+
+# --- backend: Ktor client (provider HTTP calls) ---
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# Security alignment for Ktor/Flyway/Auth0 transitives. BOMs prevent individual Netty/Jackson
+# modules from drifting back to vulnerable versions through a lower transitive constraint.
+netty-bom = { module = "io.netty:netty-bom", version.ref = "netty" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+
+# --- backend: persistence ---
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+
+# --- backend: logging ---
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }

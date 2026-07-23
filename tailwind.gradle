@@ -1,10 +1,12 @@
 // Tailwind CSS build task
+def npmExecutable = System.getProperty('os.name').toLowerCase().contains('windows') ? 'npm.cmd' : 'npm'
+
 task compileTailwind(type: Exec) {
     description = 'Compile Tailwind CSS'
     group = 'build'
 
     workingDir projectDir
-    commandLine 'npm', 'run', 'tailwind:build'
+    commandLine npmExecutable, 'run', 'tailwind:build'
 
     // Check if tailwindcss is installed, if not, install dependencies
     doFirst {
@@ -15,7 +17,7 @@ task compileTailwind(type: Exec) {
             logger.lifecycle("Tailwind CSS not found. Installing npm dependencies...")
             exec {
                 workingDir projectDir
-                commandLine 'npm', 'install'
+                commandLine npmExecutable, 'install'
             }
         }
     }

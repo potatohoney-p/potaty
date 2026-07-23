@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 plugins {
@@ -18,9 +19,9 @@ dependencies {
     implementation(projects.keycommand)
     implementation(projects.lifecycle)
     implementation(projects.livedata)
-    implementation(projects.monoboard)
-    implementation(projects.monobitmap)
-    implementation(projects.monobitmapManager)
+    implementation(projects.potatyBoard)
+    implementation(projects.potatyBitmap)
+    implementation(projects.potatyBitmapManager)
     implementation(projects.shape)
     implementation(projects.shapeClipboard)
     implementation(projects.shapeSelection)
@@ -30,6 +31,14 @@ dependencies {
     implementation(projects.uiAppStateManager)
     implementation(projects.uiCanvas)
     implementation(projects.uiToolbar)
+
+    // --- Anything-to-Diagram: source-grounded generation wired into the editor ---
+    implementation(projects.diagramIr)
+    implementation(projects.layoutEngine)
+    implementation(projects.renderCore)
+    implementation(projects.rendererAscii)
+    implementation(projects.workbenchClient)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.kotlin.test.js)
 }

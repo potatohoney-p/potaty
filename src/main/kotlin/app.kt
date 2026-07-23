@@ -1,11 +1,12 @@
 /*
  * Copyright (c) 2023, tuanchauict
+ * Copyright (c) 2026, Potaty
  */
 
 @file:Suppress("ktlint:filename")
 
+import com.potaty.app.PotatyApplication
 import kotlinx.browser.window
-import mono.app.PotatyApplication
 
 fun main() {
     val application = PotatyApplication()

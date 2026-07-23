@@ -13,7 +13,7 @@ module.exports = {
     extend: {
       fontFamily: {
         mono: ["'Jetbrains Mono'", 'Menlo', "'Courier New'", 'Courier', 'monospace'],
-        ui: ["'Roboto'", 'Arial', 'serif'],
+        ui: ["'Samsung Sharp Sans'", "'SamsungOne'", "'Pretendard Variable'", "'Noto Sans KR'", 'Arial', 'sans-serif'],
       },
       spacing: {
         'nav': '48px',
