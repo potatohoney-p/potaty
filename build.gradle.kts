@@ -9,7 +9,7 @@ import java.util.zip.GZIPOutputStream
 
 plugins {
     kotlin("js") version "1.8.20"
-    kotlin("plugin.serialization") version "1.8.20"
+    kotlin("plugin.serialization") version "2.4.10"
     id("org.jetbrains.compose") version "1.4.0"
     id("io.miret.etienne.sass") version "1.4.0"
 }
